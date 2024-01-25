@@ -131,19 +131,16 @@ function displayUserModal(user) {
         }
     });
 
+    // Select prev/next buttons
     const prev = document.querySelector('#modal-prev');
     const next = document.querySelector('#modal-next');
-    console.log(prev);
-    console.log(next);
 
+    // Get index of current user
     const currentUserIndex = users.indexOf(user);
-    console.log(currentUserIndex);
-    console.log(users.length);
 
+    // Set index of previous/next user
     const prevUser = currentUserIndex > 0 ? currentUserIndex - 1 : users.length - 1;
     const nextUser = currentUserIndex < users.length - 1 ? currentUserIndex + 1 : 0;
-    console.log(prevUser);
-    console.log(nextUser);
 
     // Add Drop shadow and Scale button
     prev.addEventListener('mouseover', () => {
@@ -169,12 +166,13 @@ function displayUserModal(user) {
         next.style.transform = "scale(1)";
     });
 
+    // Add event listener to prev button and display user
     prev.addEventListener('click', () => {
         modalContainer.remove('open');
         displayUserModal(users[prevUser]);
-
     });
 
+    /// Add event listener to next button and display user
     next.addEventListener('click', () => {
         modalContainer.remove('open');
         displayUserModal(users[nextUser]);
@@ -246,5 +244,4 @@ searchInput.addEventListener("keyup", e => {
        const html = `<h3 class="no-results">No Results Found!</h3>`
        gallery.innerHTML = html;
     }
- 
 });
