@@ -39,7 +39,7 @@ function displayUsers(data) {
     data.forEach(user => {
         console.log(user);
         //      - Create a div for user.
-        //      - Add the user name and iamge to the div with the provided HTML structure.
+        //      - Add the user name and image to the div with the provided HTML structure.
         let userHTML = `
             <div class="card" data-name="${user.email}">
                 <div class="card-img-container">
@@ -84,9 +84,12 @@ gallery.addEventListener('click', e => {
 //   update the user content with the user data
 function displayUserModal(user) {
 
+    // Format date of birth with leading zeros: 01/01/1999 10/10/1999
     let dob = new Date(user.dob.date);
-    dob = `${dob.getMonth() + 1}/${dob.getDay() + 1}/${dob.getFullYear() + 1}`
-    console.log(dob);
+    let day = dob.getDay() + 1 < 10 ? `0${dob.getDay() + 1}` : `${dob.getDay() + 1}`;
+    let month = dob.getMonth() + 1 < 10 ? `0${dob.getMonth() + 1}` : `${dob.getMonth() + 1}`;
+    let year = dob.getFullYear() + 1;
+    dob = `${month}/${day}/${year}`
 
     // console.log("from displayUserModal")
     const modalHTML = `
@@ -107,7 +110,6 @@ function displayUserModal(user) {
     `
     document.body.insertAdjacentHTML('beforeend', modalHTML)
 
-    
     modalContainer = document.querySelector('.modal-container');
     console.log(modalContainer);
     closeButton = document.querySelector('#modal-close-btn');
