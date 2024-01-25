@@ -145,10 +145,34 @@ function displayUserModal(user) {
     console.log(prevUser);
     console.log(nextUser);
 
+    // Add Drop shadow and Scale button
+    prev.addEventListener('mouseover', () => {
+        prev.style.boxShadow = "-5px 5px 5px lightgrey";
+        prev.style.transform = "scale(1.2)";
+    });
+
+    // Remove Drop shadow and Scale button
+    prev.addEventListener('mouseout', () => {
+        prev.style.boxShadow = "none";
+        prev.style.transform = "scale(1)";
+    });
+
+    // Add Drop shadow and Scale button
+    next.addEventListener('mouseover', () => {
+        next.style.boxShadow = "5px 5px 5px lightgrey";
+        next.style.transform = "scale(1.2)";
+    });
+
+    // Remove Drop shadow and Scale button
+    next.addEventListener('mouseout', () => {
+        next.style.boxShadow = "none";
+        next.style.transform = "scale(1)";
+    });
 
     prev.addEventListener('click', () => {
         modalContainer.remove('open');
         displayUserModal(users[prevUser]);
+
     });
 
     next.addEventListener('click', () => {
@@ -223,4 +247,4 @@ searchInput.addEventListener("keyup", e => {
        gallery.innerHTML = html;
     }
  
- });
+});
