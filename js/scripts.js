@@ -1,6 +1,6 @@
 // Global Variables
 let users = [];
-let url = 'https://randomuser.me/api/1.4/?inc=picture,name,email,location,phone,dob&results=12'
+let url = 'https://randomuser.me/api/1.4/?inc=picture,name,email,location,phone,dob,nat&results=12&nat=US'
 const gallery = document.querySelector('#gallery');
 
 // 2. Get and display 12 random users
@@ -17,7 +17,6 @@ async function getRandomUsers() {
 
         // Data added to users variable
         users = data.results;
-        console.log(users);
 
         //  - pass the users to the displayCountries function.
         displayUsers(users);
@@ -34,10 +33,8 @@ what info should be displayed on the page and how it should be styled.
 */
 
 function displayUsers(data) {
-    console.log(data);
     //  - Loop over the array of users.
     data.forEach(user => {
-        console.log(user);
         //      - Create a div for user.
         //      - Add the user name and image to the div with the provided HTML structure.
         let userHTML = `
@@ -64,21 +61,17 @@ function displayUsers(data) {
 gallery.addEventListener('click', e => {
      //   Make sure that only clicks on the user element are targeted
     const userCard = e.target.closest('.card');
-    console.log(userCard);
 
     if (!userCard) return;
     
     //     Get the user name from the clicked element
     const userName = userCard.dataset.name;
-    console.log(userName);
 
     //     Find the user object in the users array that matches the name
     const user = users.find(
         (user) => user.email === userName
     );
-    console.log(userName);
     displayUserModal(user);
-    
 });
 
 //   update the user content with the user data
@@ -111,9 +104,7 @@ function displayUserModal(user) {
     document.body.insertAdjacentHTML('beforeend', modalHTML)
 
     modalContainer = document.querySelector('.modal-container');
-    console.log(modalContainer);
     closeButton = document.querySelector('#modal-close-btn');
-    console.log(closeButton);
 
     // Click event listener on the close button
     closeButton.addEventListener('click', ()  => {
@@ -124,7 +115,6 @@ function displayUserModal(user) {
     modalContainer.addEventListener('click', e  => {
         const isOutSide = !e.target.closest('.modal');
         if (isOutSide) {
-            console.log(e.target.closest);
             modalContainer.remove();
         }
     });
@@ -137,5 +127,81 @@ function displayUserModal(user) {
     });
 }; 
 
+/*
+Extra Credit
+
+To get an "exceeds" rating, complete all of the steps below:
+*/
+
+// 1. Add search functionality
+function addSearchComponent() {
+    const searchComponent = `
+    <form action="#" method="get">
+        <input type="search" id="search-input" class="search-input" placeholder="Search...">
+        <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
+    </form>
+    `
+    console.log(searchComponent);
+    // Get search box container Div
+    const searchContainer = document.querySelector(".search-container");
+    console.log(searchContainer);
+    // Insert the the search component into the DOM
+    searchContainer.insertAdjacentHTML("beforeend", searchComponent);
+ }
+
+
 // Call the getRandomUsers function.
-getRandomUsers()
+getRandomUsers();
+
+// Call the Search Component.
+addSearchComponent();
+
+// Get Search Component
+const searchInput = document.querySelector("#search-input");
+console.log(searchInput);
+
+// Event listener on Search Component
+searchInput.addEventListener("keyup", e => {
+
+    console.log(users);
+   
+    // Create a variable storing an empty array for the soon-to-be filtered users.
+    const newUsers = [];
+  
+ 
+    // Create a variable to store the string the user has typed.
+    console.log(e);
+    let userInput = e.target.value.toLowerCase();
+    console.log(userInput);
+ 
+    // Loop through the data array of users
+    for (let i = 0; i < users.length; i++) {
+       // Create variables to hold the user name
+       const userFirstName = users[i].name.first.toLowerCase();
+       const userLastName = users[i].name.last.toLowerCase();
+       const userFullName = userFirstName + " " + userLastName
+       console.log(userFullName);
+ 
+       // Conditional to check if the user's first or last name includes the user's input.
+       if (userFullName.includes(userInput)) {
+          console.log(userFullName);
+          console.log(users[i]);
+          newUsers.push(users[i]);
+       }
+    }
+ 
+    console.log(newUsers);
+    console.log(newUsers.length);
+       
+    // Conditional to check if the length of the new array is greater than zero.
+    if (newUsers.length > 0) {
+       gallery.innerHTML = "";
+       // Call the displayUsers() function passing it this new users array.
+       displayUsers(newUsers);
+    } else {
+       // If no matches are found for a search, display a “No results found” type message on the page.
+       const html = `<h3 class="no-results">No Results Found!</h3>`
+       gallery.innerHTML = html;
+    }
+ 
+ });
