@@ -1,5 +1,6 @@
 // Global Variables
 let users = [];
+let url = 'https://randomuser.me/api/1.4/?inc=picture,name,email,location,phone,dob&results=12'
 const gallery = document.querySelector('#gallery');
 
 // 2. Get and display 12 random users
@@ -7,7 +8,7 @@ const gallery = document.querySelector('#gallery');
 async function getRandomUsers() {
     try {
         //  - retrieve the image, name, email, location from 12.
-        const response = await fetch('https://randomuser.me/api/1.4/?inc=picture,name,email,location&results=12');
+        const response = await fetch(url);
 
         if (!response.ok) throw new Error('There was an error retrieving the data.');
 
@@ -40,7 +41,7 @@ function displayUsers(data) {
         //      - Create a div for user.
         //      - Add the user name and iamge to the div with the provided HTML structure.
         let userHTML = `
-            <div class="card">
+            <div class="card" data-name="${user.email}">
                 <div class="card-img-container">
                     <img class="card-img" src=${user.picture.medium} alt="profile picture">
                 </div>
@@ -52,10 +53,87 @@ function displayUsers(data) {
             </div>
         `;
 
-        //      - Add the created div to the `.countries` container element.
+        //      - Add the created div to the gallery element.
         gallery.insertAdjacentHTML('beforeend', userHTML);
     });
 };
+
+/* 3. Create a modal window
+// When any part of an employee item in the directory is clicked, a modal window should pop up with the following details displayed:
+// Image, Name, Email, City or location, Cell Number, Detailed Address, including street name and number, state or country, and postcode, Birthday */
+gallery.addEventListener('click', e => {
+     //   Make sure that only clicks on the user element are targeted
+    const userCard = e.target.closest('.card');
+    console.log(userCard);
+
+    if (!userCard) return;
+    
+    //     Get the user name from the clicked element
+    const userName = userCard.dataset.name;
+    console.log(userName);
+
+    //     Find the user object in the users array that matches the name
+    const user = users.find(
+        (user) => user.email === userName
+    );
+    console.log(userName);
+    displayUserModal(user);
+    
+});
+
+//   update the user content with the user data
+function displayUserModal(user) {
+
+    let dob = new Date(user.dob.date);
+    dob = `${dob.getMonth() + 1}/${dob.getDay() + 1}/${dob.getFullYear() + 1}`
+    console.log(dob);
+
+    // console.log("from displayUserModal")
+    const modalHTML = `
+    <div class="modal-container">
+        <div class="modal">
+            <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
+            <div class="modal-info-container">
+                <img class="modal-img" src=${user.picture.large} alt="profile picture">
+                <h3 id="name" class="modal-name cap">${user.name.first} ${user.name.last}</h3>
+                <p class="modal-text">${user.email}</p>
+                <p class="modal-text cap">${user.location.city}</p>
+                <hr>
+                <p class="modal-text">${user.phone}</p>
+                <p class="modal-text">${user.location.street.number} ${user.location.street.name}, ${user.location.city}, ${user.location.state} ${user.location.postcode}</p>
+                <p class="modal-text">Birthday: ${dob}
+        </div>
+    </div>
+    `
+    document.body.insertAdjacentHTML('beforeend', modalHTML)
+
+    
+    modalContainer = document.querySelector('.modal-container');
+    console.log(modalContainer);
+    closeButton = document.querySelector('#modal-close-btn');
+    console.log(closeButton);
+
+    // Click event listener on the close button
+    closeButton.addEventListener('click', ()  => {
+        modalContainer.remove();
+    });
+
+    // Click event listener outside the modal
+    modalContainer.addEventListener('click', e  => {
+        const isOutSide = !e.target.closest('.modal');
+        if (isOutSide) {
+            console.log(e.target.closest);
+            modalContainer.remove();
+        }
+    });
+
+    // Close the modal when the user presses the escape key
+    document.addEventListener('keyup', e  => {
+        if (e.key === 'Escape') {
+            modalContainer.remove('open');
+        }
+    });
+}; 
 
 // Call the getRandomUsers function.
 getRandomUsers()
