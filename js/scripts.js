@@ -84,7 +84,6 @@ function displayUserModal(user) {
     let year = dob.getFullYear() + 1;
     dob = `${month}/${day}/${year}`
 
-    // console.log("from displayUserModal")
     const modalHTML = `
     <div class="modal-container">
         <div class="modal">
@@ -100,6 +99,10 @@ function displayUserModal(user) {
                 <p class="modal-text">Birthday: ${dob}
         </div>
     </div>
+    <div class="modal-btn-container">
+        <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
+        <button type="button" id="modal-next" class="modal-next btn">Next</button>
+    </div>
     `
     document.body.insertAdjacentHTML('beforeend', modalHTML)
 
@@ -114,7 +117,9 @@ function displayUserModal(user) {
     // Click event listener outside the modal
     modalContainer.addEventListener('click', e  => {
         const isOutSide = !e.target.closest('.modal');
-        if (isOutSide) {
+        if (prev || next) {
+            return;
+        } else if (isOutSide) {
             modalContainer.remove();
         }
     });
@@ -125,6 +130,32 @@ function displayUserModal(user) {
             modalContainer.remove('open');
         }
     });
+
+    const prev = document.querySelector('#modal-prev');
+    const next = document.querySelector('#modal-next');
+    console.log(prev);
+    console.log(next);
+
+    const currentUserIndex = users.indexOf(user);
+    console.log(currentUserIndex);
+    console.log(users.length);
+
+    const prevUser = currentUserIndex > 0 ? currentUserIndex - 1 : users.length - 1;
+    const nextUser = currentUserIndex < users.length - 1 ? currentUserIndex + 1 : 0;
+    console.log(prevUser);
+    console.log(nextUser);
+
+
+    prev.addEventListener('click', () => {
+        modalContainer.remove('open');
+        displayUserModal(users[prevUser]);
+    });
+
+    next.addEventListener('click', () => {
+        modalContainer.remove('open');
+        displayUserModal(users[nextUser]);
+    });
+
 }; 
 
 /*
@@ -141,10 +172,9 @@ function addSearchComponent() {
         <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
     </form>
     `
-    console.log(searchComponent);
+
     // Get search box container Div
     const searchContainer = document.querySelector(".search-container");
-    console.log(searchContainer);
     // Insert the the search component into the DOM
     searchContainer.insertAdjacentHTML("beforeend", searchComponent);
  }
@@ -158,40 +188,29 @@ addSearchComponent();
 
 // Get Search Component
 const searchInput = document.querySelector("#search-input");
-console.log(searchInput);
 
 // Event listener on Search Component
 searchInput.addEventListener("keyup", e => {
-
-    console.log(users);
    
     // Create a variable storing an empty array for the soon-to-be filtered users.
     const newUsers = [];
   
  
     // Create a variable to store the string the user has typed.
-    console.log(e);
     let userInput = e.target.value.toLowerCase();
-    console.log(userInput);
  
     // Loop through the data array of users
     for (let i = 0; i < users.length; i++) {
        // Create variables to hold the user name
        const userFirstName = users[i].name.first.toLowerCase();
        const userLastName = users[i].name.last.toLowerCase();
-       const userFullName = userFirstName + " " + userLastName
-       console.log(userFullName);
+       const userFullName = userFirstName + " " + userLastName;
  
        // Conditional to check if the user's first or last name includes the user's input.
        if (userFullName.includes(userInput)) {
-          console.log(userFullName);
-          console.log(users[i]);
           newUsers.push(users[i]);
        }
     }
- 
-    console.log(newUsers);
-    console.log(newUsers.length);
        
     // Conditional to check if the length of the new array is greater than zero.
     if (newUsers.length > 0) {
